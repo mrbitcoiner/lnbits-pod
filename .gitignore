@@ -1,0 +1,4 @@
+**/*.swp
+volume/data
+.env
+.env_lnbits
