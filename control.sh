@@ -15,7 +15,7 @@ eprintln() {
 check_env() {
 	[ -e "${RELDIR}/.env" ] || eprintln 'please, copy .env.example to .env'
 	source "${RELDIR}/.env" 
-	[ -e "${RELDIR}/.env_lnbits.example" ] \
+	[ -e "${RELDIR}/.env_lnbits" ] \
 		|| eprintln 'please, copy .env_lnbits.example to .env_lnbits'
 	! [ -z "${EXT_PORT}" ] || eprintln 'undefined env EXT_PORT'
 }
