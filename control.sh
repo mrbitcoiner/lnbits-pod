@@ -19,6 +19,15 @@ check_env() {
 		|| eprintln 'please, copy .env_lnbits.example to .env_lnbits'
 	! [ -z "${EXT_PORT}" ] || eprintln 'undefined env EXT_PORT'
 }
+loop_check_lnd() {
+	! [ -z "${LND_HOST}" ] || eprintln 'undefined env LND_HOST'
+	! [ -z "${LND_REST_PORT}" ] || eprintln 'undefined env LND_REST_PORT'
+	while ! curl -k -X GET https://${LND_HOST}:${LND_REST_PORT} 2>/dev/null \
+		| grep '"code":5' 1>/dev/null 2>&1; do
+		printf 'waiting lnd to start\n'
+		sleep 5
+	done
+}
 common() {
 	mkdir -p "${RELDIR}/volume/data"
 	chmod +x "${RELDIR}"/volume/scripts/*.sh
@@ -61,6 +70,7 @@ build() {
 	"${RELDIR}"
 }
 up() {
+	[ "${WAIT_LND_START}" != "1" ] || loop_check_lnd
 	podman run --rm \
 		-p ${EXT_PORT}:5000 \
 		-v ${RELDIR}/volume:/app \
